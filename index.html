@@ -1,314 +1,423 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>DIWA Aneurysm Detection</title>
-
 <style>
-    /* ===== THEME COLORS ===== */
-    :root {
-        --dark-blue: #0b1e39;
-        --mid-blue: #123c69;
-        --light-blue: #5fa8ff;
-        --gradient-blue: linear-gradient(to bottom, #4c82df, #ffffff);
-    }
+/* ===== THEME COLORS ===== */
+:root {
+  --dark-blue: #0b1e39;
+  --mid-blue: #123c69;
+  --light-blue: #5fa8ff;
+  --gradient-blue: linear-gradient(to bottom, #4c82df, #ffffff);
+}
 
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        background: var(--dark-blue);
-        color: #e9eef7;
-    }
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: var(--dark-blue);
+  color: #e9eef7;
+}
 
-    h1, h2 {
-        color: var(--light-blue);
-    }
+h1, h2 {
+  color: var(--light-blue);
+}
 
-    /* ===== AUTH CARD ===== */
-    .center-card {
-        width: 350px;
-        margin: 80px auto;
-        background: #112743;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        text-align: center;
-        color: #e9eef7;
-    }
+/* ===== AUTH CARD ===== */
+.center-card {
+  width: 350px;
+  margin: 20px auto;
+  background: #112743;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  text-align: center;
+  color: #e9eef7;
+}
+.center-card input,
+.center-card button {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #2b4c77;
+  font-size: 15px;
+  background: #0e223d;
+  color: white;
+}
+.center-card input:focus {
+  outline: 2px solid var(--light-blue);
+}
+.center-card button {
+  background: var(--light-blue);
+  color: #0b1e39;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+.center-card button:hover {
+  background: #8bc2ff;
+}
+.link {
+  color: var(--light-blue);
+  cursor: pointer;
+  font-size: 14px;
+}
+.hidden {
+  display: none;
+}
 
-    input, button {
-        width: 100%;
-        padding: 12px;
-        margin-top: 10px;
-        border-radius: 8px;
-        border: 1px solid #2b4c77;
-        font-size: 15px;
-        background: #0e223d;
-        color: white;
-    }
+/* ===== NAVIGATION BAR ===== */
+.navbar {
+  background: var(--mid-blue);
+  padding: 15px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid var(--light-blue);
+}
 
-    input:focus {
-        outline: 2px solid var(--light-blue);
-    }
+/* ===== TOP TABS (Folder Style) ===== */
+.nav-tabs {
+  background: var(--mid-blue);
+  padding-top: 15px;
+  padding-left: 10px;
+}
+.nav-tabs div {
+  display: inline-block;
+  padding: 12px 20px;
+  margin-right: 10px;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  font-weight: bold;
+  color: #0b1e39;
+  background: var(--gradient-blue);
+  transition: 0.3s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  user-select: none;
+}
+.nav-tabs .active {
+  border-bottom: 3px solid white;
+  background: white;
+  color: var(--dark-blue);
+}
 
-    button {
-        background: var(--light-blue);
-        color: #0b1e39;
-        font-weight: bold;
-        border: none;
-    }
-    button:hover {
-        background: #8bc2ff;
-    }
+/* ===== CONTENT SECTIONS ===== */
+.section {
+  display: none;
+  padding: 20px 40px;
+  background: #0f2642;
+  min-height: 300px;
+  color: #e8eef8;
+  border-top: 3px solid var(--light-blue);
+}
+.section.active {
+  display: block;
+}
 
-    .link {
-        color: var(--light-blue);
-        cursor: pointer;
-        font-size: 14px;
-    }
+/* ===== UPLOAD BOX ===== */
+.upload-box {
+  margin-top: 20px;
+  border: 2px dashed var(--light-blue);
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  background: #112743;
+}
+#preview-img {
+  width: 300px;
+  margin-top: 20px;
+  display: none;
+  border-radius: 10px;
+  border: 2px solid var(--light-blue);
+}
+#result-box {
+  margin-top: 25px;
+  padding: 20px;
+  background: #1b3d66;
+  border-left: 5px solid var(--light-blue);
+  border-radius: 8px;
+  display: none;
+  color: white;
+}
 
-    .hidden {
-        display: none;
-    }
-
-    /* ===== NAVIGATION BAR ===== */
-    .navbar {
-        background: var(--mid-blue);
-        padding: 15px;
-        color: white;
-        display: flex;
-        justify-content:space-between;
-        align-items: center;
-        border-bottom: 3px solid var(--light-blue);
-    }
-
-    /* ===== TOP TABS (Folder Style) ===== */
-    .nav-tabs {
-        background: var(--mid-blue);
-        padding-top: 15px;
-        padding-left: 10px;
-    }
-
-    .nav-tabs div {
-        display: inline-block;
-        padding: 12px 20px;
-        margin-right: 10px;
-        border-radius: 8px 8px 0 0;
-        cursor: pointer;
-        font-weight: bold;
-        color: #0b1e39;
-        background: var(--gradient-blue); /* BLUE → WHITE */
-        transition: 0.3s;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    }
-
-    .nav-tabs .active {
-        border-bottom: 3px solid white;
-        background: white;
-        color: var(--dark-blue);
-    }
-
-    /* ===== CONTENT SECTIONS ===== */
-    .section {
-        display: none;
-        padding: 20px 40px;
-        background: #0f2642;
-        min-height: 300px;
-        color: #e8eef8;
-        border-top: 3px solid var(--light-blue);
-    }
-    .section.active {
-        display: block;
-    }
-
-    /* ===== UPLOAD BOX ===== */
-    .upload-box {
-        margin-top: 20px;
-        border: 2px dashed var(--light-blue);
-        padding: 30px;
-        border-radius: 12px;
-        text-align: center;
-        background: #112743;
-    }
-
-    #preview-img {
-        width: 300px;
-        margin-top: 20px;
-        display: none;
-        border-radius: 10px;
-        border: 2px solid var(--light-blue);
-    }
-
-    #result-box {
-        margin-top: 25px;
-        padding: 20px;
-        background: #1b3d66;
-        border-left: 5px solid var(--light-blue);
-        border-radius: 8px;
-        display: none;
-        color: white;
-    }
+/* ===== ABOUT US BOX ===== */
+.about-box {
+  width: 70%;
+  margin: 30px auto;
+  padding: 25px;
+  background: #112743;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
 </style>
 </head>
 <body>
 
+<!-- ABOUT US on top (visible before login/signup) -->
+<div id="about-top" class="about-box">
+  <h2>About Us</h2>
+  <p>
+We are a multidisciplinary research team dedicated to advancing early and accessible diagnosis of intracranial aneurysms through artificial intelligence. Our project focuses on developing an AI-enhanced diagnostic model trained on locally sourced, anonymized CTA and MRA imaging datasets.
+
+The model may also integrate clinical factors such as demographics, co-morbidities, vascular risk factors, and family history, enabling it to operate as both an imaging-only detector and a multimodal decision-support pipeline.
+
+All development and inference processes operate offline without internet-based data retrieval, ensuring privacy, ethical compliance, and institutional data control. Our goal is to enhance diagnostic accuracy, minimize inter-reader variability, and improve early intervention outcomes for at-risk patients.
+  </p>
+</div>
+
 <!-- LOGIN/SIGNUP TOGGLE CARD -->
 <div id="auth-card" class="center-card">
-    <h2 id="auth-title">Login</h2>
-    <input type="text" id="name" placeholder="Full Name" class="hidden">
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="pass" placeholder="Password">
-    <button onclick="authAction()">Login</button>
-    <p id="toggle-text">Don't have an account? <span class="link" onclick="toggleAuth()">Sign Up</span></p>
+  <h2 id="auth-title">Login</h2>
+  <input type="text" id="name" placeholder="Full Name" class="hidden" autocomplete="name" />
+  <input type="email" id="email" placeholder="Email" autocomplete="email" />
+  <input type="password" id="pass" placeholder="Password" autocomplete="current-password" />
+  <button onclick="authAction()">Login</button>
+  <p id="toggle-text">Don't have an account? <span class="link" onclick="toggleAuth()">Sign Up</span></p>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="hidden">
+  <div class="navbar">
+    <h2>DIWA Aneurysm Detection</h2>
+    <button style="width:120px;" onclick="logout()">Log Out</button>
+  </div>
 
-    <div class="navbar">
-        <h2>DIWA Aneurysm Detection</h2>
-        <button style="width:120px;" onclick="logout()">Log Out</button>
+  <div class="nav-tabs">
+    <div class="active" onclick="switchTab(event, 'intro')">Introduction</div>
+    <div onclick="switchTab(event, 'upload')">Upload Image</div>
+    <div onclick="switchTab(event, 'results')">Results</div>
+    <div onclick="switchTab(event, 'profile')">Profile</div>
+    <div onclick="switchTab(event, 'aboutus')">About Us</div>
+  </div>
+
+  <!-- Introduction Section -->
+  <div class="section active" id="intro">
+    <h2>Project Introduction</h2>
+    <p>
+      This study aims to develop an AI-enhanced diagnostic model capable of identifying early radiographic features of intracranial aneurysms using CTA/MRA imaging. The model may incorporate patient-specific data such as demographics, comorbidities, vascular history, lifestyle risks, and hereditary markers, creating a dual-mode diagnostic workflow: imaging-only or multimodal.
+      <br /><br />
+      The system is strictly offline and uses only locally curated, anonymized data to ensure security, privacy, and ethical compliance — particularly within hospital-based research frameworks.
+    </p>
+  </div>
+
+  <!-- Upload -->
+  <div class="section" id="upload">
+    <h2>Upload a Brain Scan (CTA / MRA / DSA)</h2>
+    <div class="upload-box">
+      <input type="file" id="image-upload" accept="image/*" onchange="previewImage()" />
+      <img id="preview-img" />
+    </div>
+    <button onclick="detectAneurysm()" style="margin-top:20px;">Detect Aneurysm</button>
+    <div id="result-box"></div>
+  </div>
+
+  <!-- Results Section with Subfolders -->
+  <div class="section" id="results">
+    <h2>Detection History</h2>
+
+    <!-- Sub-tabs -->
+    <div class="nav-tabs" style="margin-top: 15px; padding-left: 0;">
+      <div class="active" onclick="switchSubTab(event, 'aneurysm-detection')">Aneurysm Detection</div>
+      <div onclick="switchSubTab(event, 'vessel-segmentation')">Vessel Segmentation</div>
+      <div onclick="switchSubTab(event, 'quantitative-risk')">Quantitative Risk Assessment</div>
     </div>
 
-    <div class="nav-tabs">
-        <div class="active" onclick="switchTab('upload')">Upload Image</div>
-        <div onclick="switchTab('results')">Results</div>
-        <div onclick="switchTab('profile')">Profile</div>
+    <!-- Sub-section content -->
+    <div class="sub-section" id="aneurysm-detection" style="display: block; margin-top: 20px;">
+      <p>No aneurysm detection data yet.</p>
     </div>
-
-    <!-- Upload Section -->
-    <div class="section active" id="upload">
-        <h2>Upload a Brain Scan (CTA / MRA / DSA)</h2>
-
-        <div class="upload-box">
-            <input type="file" id="image-upload" accept="image/*" onchange="previewImage()">
-            <img id="preview-img">
-        </div>
-
-        <button onclick="detectAneurysm()" style="margin-top:20px;">Detect Aneurysm</button>
-
-        <div id="result-box"></div>
+    <div class="sub-section" id="vessel-segmentation" style="display: none; margin-top: 20px;">
+      <p>No vessel segmentation data yet.</p>
     </div>
-
-    <!-- Results Section -->
-    <div class="section" id="results">
-        <h2>Detection History</h2>
-        <p>No data yet. (This will populate once backend is connected.)</p>
+    <div class="sub-section" id="quantitative-risk" style="display: none; margin-top: 20px;">
+      <p>No quantitative risk assessment data yet.</p>
     </div>
+  </div>
 
-    <!-- Profile -->
-    <div class="section" id="profile">
-        <h2>User Profile</h2>
-        <p><strong>Name:</strong> <span id="prof-name"></span></p>
-        <p><strong>Email:</strong> <span id="prof-email"></span></p>
-    </div>
-</div>
+  <!-- Profile -->
+  <div class="section" id="profile">
+    <h2>User Profile</h2>
+    <p><strong>Name:</strong> <span id="prof-name"></span></p>
+    <p><strong>Email:</strong> <span id="prof-email"></span></p>
+  </div>
+
+  <!-- About Us in tab -->
+  <div class="section" id="aboutus">
+    <h2>About Our Research Team</h2>
+
+    <p>In the Philippines, limited access to specialized brain imaging and neurosurgical care complicates early detection and effective management of IAs. A study on the country's stroke care system indicates only 1.09 CT scanners and 0.30 MRI machines per million inhabitants, revealing stark disparities between urban and rural areas (Yong et al., 2022; World Stroke Organization, 2022). Additionally, the neurosurgical workforce remains insufficient, with few specialists per capita across many regions (Yong et al., 2022).</p>
+
+    <br>
+
+    <p>One major challenge is that unruptured aneurysms are often asymptomatic, making early detection difficult before catastrophic rupture (Frontier et al., 2025). Although imaging techniques like CT angiography (CTA) and MR angiography (MRA) are standard for detecting aneurysms, their sensitivity, especially for small (&lt; 3 mm) or atypical aneurysms, can be limited (White et al., 2001). Manual neuroimage analysis is labor-intensive and prone to variability between experts, resulting in inconsistent diagnoses even in advanced centers (Daga et al., 2024). Wang et al. (2024) highlight that while artificial intelligence (AI) and deep learning offer promising detection capabilities, challenges remain such as limited high-quality data and the risk of false positives.</p>
+
+    <br>
+
+    <p>Advancements in medical imaging have led to improved aneurysm detection and rupture risk assessment methods. Recent research shows convolutional neural networks (CNNs) and U-Net–based architectures achieve high accuracy in detecting and segmenting aneurysms from volumetric scans, enabling automated localization previously requiring expert review. In China, Zhu et al. (2022) demonstrated that CNN and U-Net outperform traditional methods due to advanced feature extraction. CNNs capture hierarchical image patterns via stacked convolutional layers, while U-Net and its variants, like 3D nnU-Net, apply encoder–decoder networks for precise pixel-level segmentation of small or irregular aneurysms (Guo et al., 2023; Li et al., 2024).</p>
+
+    <br>
+
+    <p>Beyond detection, radiomics and morphological analyses have become critical for rupture risk stratification. Radiomic approaches extract quantitative texture and intensity features linked to aneurysm instability and have shown strong predictive value in meta-analyses (Wang et al., 2024). Morphology-driven deep learning models incorporating geometric parameters such as curvature, aspect ratio, and wall irregularity enhance rupture prediction when combined with clinical data (Xue et al., 2022; Lee et al., 2023). These advances rely heavily on high-resolution imaging modalities, notably CTA and MRI/MRA, which provide detailed vascular insights. CTA excels in spatial resolution for initial detection, while MRI enables radiation-free, detailed vessel-wall imaging supporting robust deep learning applications (Zhang et al., 2023; Huang et al., 2025). Together, CNNs, U-Net, radiomics, morphology analysis, and multimodal imaging fuel the development of accurate AI-assisted tools for aneurysm risk evaluation.</p>
+
+    <br>
+    
+    <p>Radiomics models based on CTA significantly improve prediction accuracy by combining aneurysm texture, intensity, and shape features (Jia et al., 2024). Morphology-based radiomics signatures—including irregularity, ellipticity, compactness, and surface curvature—also outperform traditional descriptors in distinguishing ruptured from unruptured aneurysms (Tong et al., 2021; Liu et al., 2021). Machine learning classifiers such as support vector machines and gradient boosting show that combined radiomic–morphological features outperform models relying solely on clinical or morphological data for identifying high-risk aneurysms (Wang et al., 2024; Chen et al., 2020).</p>
+
+    <br>
+
+    <p>Recent work indicates some radiomics models surpass clinical scoring systems like PHASES and ELAPSS in rupture prediction, offering more personalized, data-driven assessments (Feng et al., 2024; Yang et al., 2023). High-resolution vessel-wall imaging radiomics further outperform conventional clinical scores by detecting subtle wall enhancement patterns linked to aneurysm instability (Zhang et al., 2023).</p>
+
+    <br>
+
+    <p>Despite AI's promise in medical imaging, current deep-learning models face significant limitations. Dataset biases and confounding factors reduce reliability in clinical practice (Stanley et al., 2023; Koçak et al., 2024), while many lack multi-center or external validation necessary for broad generalization (Zhang & Qie, 2023; Bridge et al., 2023). Additionally, most models focus on single tasks such as detection or segmentation, lacking unified end-to-end workflows integrating image analysis with clinical risk prediction or decision support (Laçi et al., 2025).</p>
+
+    <br>
+
+    <p>This study seeks to develop an AI-enhanced diagnostic model to identify early radiographic signs of intracranial aneurysms. It will train on locally collected CTA/MRA datasets and optionally incorporate patient demographics, comorbidities, vascular risk factors, and family history. The system will operate as either an imaging-only detector or a multimodal pipeline integrating imaging with clinical risk estimation in one framework. The AI will rely solely on anonymized, curated hospital data without connecting to external internet sources.</p>
+
+    <br>
+
+    <p>Early detection of intracranial aneurysms via Computed Tomography Angiography (CTA), a widely used modality, is critical. AI-based algorithms can improve detection rates and reduce intra- and inter-rater variability (Bizjak et al., 2023). Rotational X-ray angiography, a non-invasive imaging technique, also facilitates early aneurysm diagnosis (Ivantsits et al., 2021). Deep learning models, particularly CNNs, have demonstrated near-expert accuracy in identifying subtle aneurysmal features, enabling earlier diagnosis and enhanced clinical workflows (Adamchic, 2025).</p>
+  </div>
+
+  <!-- CREDIT LINE -->
+  <div style="
+      margin-top: 30px;
+      text-align: center;
+      padding: 15px;
+      color: #a7d8ff;
+      font-size: 18px;
+      opacity: 0.85;
+  ">
+      Designed by <strong>RIM 10 ’28</strong> of <strong>Quezon City Science High School</strong>
+  </div>
+
+</div> <!-- END OF DASHBOARD -->
 
 <script>
 /* ===== AUTH LOGIC ===== */
 let isSignup = false;
 
-window.onload = function() {
-    if(localStorage.getItem("isLoggedIn") === "true") {
-        showDashboard();
-    } else {
-        showAuthCard();
-    }
-}
+window.onload = function () {
+  if (localStorage.getItem("isLoggedIn") === "true") {
+    showDashboard();
+  } else {
+    showAuthCard();
+  }
+};
 
 function toggleAuth() {
-    isSignup = !isSignup;
-    document.getElementById("name").classList.toggle("hidden");
-    document.getElementById("auth-title").innerText = isSignup ? "Sign Up" : "Login";
-    document.querySelector("#auth-card button").innerText = isSignup ? "Sign Up" : "Login";
-    document.getElementById("toggle-text").innerHTML = isSignup ? 
-        'Already have an account? <span class="link" onclick="toggleAuth()">Login</span>' :
-        'Don\'t have an account? <span class="link" onclick="toggleAuth()">Sign Up</span>';
+  isSignup = !isSignup;
+  document.getElementById("name").classList.toggle("hidden");
+  document.getElementById("auth-title").innerText = isSignup ? "Sign Up" : "Login";
+  document.querySelector("#auth-card button").innerText = isSignup ? "Sign Up" : "Login";
+  document.getElementById("toggle-text").innerHTML = isSignup
+    ? 'Already have an account? <span class="link" onclick="toggleAuth()">Login</span>'
+    : 'Don\'t have an account? <span class="link" onclick="toggleAuth()">Sign Up</span>';
 }
 
 function authAction() {
-    let name = document.getElementById("name").value;
-    let email = document.getElementById("email").value;
-    let pass = document.getElementById("pass").value;
+  let name = document.getElementById("name").value.trim();
+  let email = document.getElementById("email").value.trim();
+  let pass = document.getElementById("pass").value.trim();
 
-    if(!email || !pass || (isSignup && !name)) {
-        alert("Please fill all required fields.");
-        return;
+  if (!email || !pass || (isSignup && !name)) {
+    alert("Please fill all required fields.");
+    return;
+  }
+
+  if (isSignup) {
+    localStorage.setItem("userName", name);
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userPass", pass);
+  } else {
+    if (email !== localStorage.getItem("userEmail") || pass !== localStorage.getItem("userPass")) {
+      alert("Invalid login credentials.");
+      return;
     }
+  }
 
-    if(isSignup) {
-        // Save new user
-        localStorage.setItem("userName", name);
-        localStorage.setItem("userEmail", email);
-        localStorage.setItem("userPass", pass);
-    } else {
-        // Login check
-        if(email !== localStorage.getItem("userEmail") || pass !== localStorage.getItem("userPass")) {
-            alert("Invalid login credentials.");
-            return;
-        }
-    }
-
-    localStorage.setItem("isLoggedIn", "true");
-    showDashboard();
+  localStorage.setItem("isLoggedIn", "true");
+  showDashboard();
 }
 
 function showAuthCard() {
-    document.getElementById("auth-card").classList.remove("hidden");
-    document.getElementById("dashboard").classList.add("hidden");
+  document.getElementById("auth-card").classList.remove("hidden");
+  document.getElementById("dashboard").classList.add("hidden");
+  document.getElementById("about-top").style.display = "block";
+  clearAuthInputs();
 }
 
 function showDashboard() {
-    document.getElementById("auth-card").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
-
-    document.getElementById("prof-name").innerText = localStorage.getItem("userName");
-    document.getElementById("prof-email").innerText = localStorage.getItem("userEmail");
+  document.getElementById("auth-card").classList.add("hidden");
+  document.getElementById("dashboard").classList.remove("hidden");
+  document.getElementById("about-top").style.display = "none";
+  document.getElementById("prof-name").innerText = localStorage.getItem("userName");
+  document.getElementById("prof-email").innerText = localStorage.getItem("userEmail");
+  switchTab(null, 'intro');
 }
 
-function logout() {
-    localStorage.setItem("isLoggedIn", "false");
-    showAuthCard();
+function clearAuthInputs() {
+  document.getElementById("name").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("pass").value = "";
 }
 
 /* ===== TAB SWITCHING ===== */
-function switchTab(sectionName) {
-    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-    document.getElementById(sectionName).classList.add('active');
+function switchTab(event, sectionName) {
+  document.querySelectorAll(".section").forEach((sec) => sec.classList.remove("active"));
+  document.getElementById(sectionName).classList.add("active");
 
-    document.querySelectorAll('.nav-tabs div').forEach(t => t.classList.remove("active"));
-    event.target.classList.add("active");
+  document.querySelectorAll(".nav-tabs div").forEach((tab) => tab.classList.remove("active"));
+  if (event && event.currentTarget) event.currentTarget.classList.add("active");
+}
+
+/* ===== SUB-TAB SWITCHING FOR RESULTS ===== */
+function switchSubTab(event, subSectionId) {
+  document.querySelectorAll('#results .sub-section').forEach(sec => sec.style.display = 'none');
+  document.getElementById(subSectionId).style.display = 'block';
+
+  const tabs = event.currentTarget.parentNode.querySelectorAll('div');
+  tabs.forEach(t => t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+/* ===== LOGOUT ===== */
+function logout() {
+  localStorage.setItem("isLoggedIn", "false");
+  showAuthCard();
 }
 
 /* ===== IMAGE PREVIEW ===== */
 function previewImage() {
-    const file = document.getElementById("image-upload").files[0];
-    if (file) {
-        document.getElementById("preview-img").src = URL.createObjectURL(file);
-        document.getElementById("preview-img").style.display = "block";
-    }
+  const file = document.getElementById("image-upload").files[0];
+  if (file) {
+    document.getElementById("preview-img").src = URL.createObjectURL(file);
+    document.getElementById("preview-img").style.display = "block";
+  }
 }
 
-/* ===== DETECTION SIMULATION ===== */
+/* ===== DETECTION ===== */
 function detectAneurysm() {
-    let resultBox = document.getElementById("result-box");
-
-    if (!document.getElementById("image-upload").files[0]) {
-        alert("Please upload an image first.");
-        return;
-    }
-
-    resultBox.style.display = "block";
-    resultBox.innerHTML = "<h3>Processing...</h3>";
-
-    setTimeout(() => {
-        resultBox.innerHTML = `
-            <h3>Detection Complete</h3>
-            <p><strong>Aneurysm Probability:</strong> 82%</p>
-            <p><strong>Status:</strong> Potential aneurysm detected.</p>
-        `;
-    }, 1500);
+  let resultBox = document.getElementById("result-box");
+  if (!document.getElementById("image-upload").files[0]) {
+    alert("Please upload an image first.");
+    return;
+  }
+  resultBox.style.display = "block";
+  resultBox.innerHTML = "<h3>Processing...</h3>";
+  setTimeout(() => {
+    resultBox.innerHTML = `
+      <h3>Detection Complete</h3>
+      <p><strong>Aneurysm Probability:</strong> 82%</p>
+      <p><strong>Status:</strong> Potential aneurysm detected.</p>
+    `;
+  }, 1500);
 }
 </script>
 
