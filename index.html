@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIWA Aneurysm Detection</title>
+
+<style>
+    /* ===== THEME COLORS ===== */
+    :root {
+        --dark-blue: #0b1e39;
+        --mid-blue: #123c69;
+        --light-blue: #5fa8ff;
+        --gradient-blue: linear-gradient(to bottom, #4c82df, #ffffff);
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: var(--dark-blue);
+        color: #e9eef7;
+    }
+
+    h1, h2 {
+        color: var(--light-blue);
+    }
+
+    /* ===== AUTH CARD ===== */
+    .center-card {
+        width: 350px;
+        margin: 80px auto;
+        background: #112743;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        text-align: center;
+        color: #e9eef7;
+    }
+
+    input, button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        border-radius: 8px;
+        border: 1px solid #2b4c77;
+        font-size: 15px;
+        background: #0e223d;
+        color: white;
+    }
+
+    input:focus {
+        outline: 2px solid var(--light-blue);
+    }
+
+    button {
+        background: var(--light-blue);
+        color: #0b1e39;
+        font-weight: bold;
+        border: none;
+    }
+    button:hover {
+        background: #8bc2ff;
+    }
+
+    .link {
+        color: var(--light-blue);
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    /* ===== NAVIGATION BAR ===== */
+    .navbar {
+        background: var(--mid-blue);
+        padding: 15px;
+        color: white;
+        display: flex;
+        justify-content:space-between;
+        align-items: center;
+        border-bottom: 3px solid var(--light-blue);
+    }
+
+    /* ===== TOP TABS (Folder Style) ===== */
+    .nav-tabs {
+        background: var(--mid-blue);
+        padding-top: 15px;
+        padding-left: 10px;
+    }
+
+    .nav-tabs div {
+        display: inline-block;
+        padding: 12px 20px;
+        margin-right: 10px;
+        border-radius: 8px 8px 0 0;
+        cursor: pointer;
+        font-weight: bold;
+        color: #0b1e39;
+        background: var(--gradient-blue); /* BLUE → WHITE */
+        transition: 0.3s;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    .nav-tabs .active {
+        border-bottom: 3px solid white;
+        background: white;
+        color: var(--dark-blue);
+    }
+
+    /* ===== CONTENT SECTIONS ===== */
+    .section {
+        display: none;
+        padding: 20px 40px;
+        background: #0f2642;
+        min-height: 300px;
+        color: #e8eef8;
+        border-top: 3px solid var(--light-blue);
+    }
+    .section.active {
+        display: block;
+    }
+
+    /* ===== UPLOAD BOX ===== */
+    .upload-box {
+        margin-top: 20px;
+        border: 2px dashed var(--light-blue);
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+        background: #112743;
+    }
+
+    #preview-img {
+        width: 300px;
+        margin-top: 20px;
+        display: none;
+        border-radius: 10px;
+        border: 2px solid var(--light-blue);
+    }
+
+    #result-box {
+        margin-top: 25px;
+        padding: 20px;
+        background: #1b3d66;
+        border-left: 5px solid var(--light-blue);
+        border-radius: 8px;
+        display: none;
+        color: white;
+    }
+</style>
+</head>
+<body>
+
+<!-- LOGIN/SIGNUP TOGGLE CARD -->
+<div id="auth-card" class="center-card">
+    <h2 id="auth-title">Login</h2>
+    <input type="text" id="name" placeholder="Full Name" class="hidden">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="pass" placeholder="Password">
+    <button onclick="authAction()">Login</button>
+    <p id="toggle-text">Don't have an account? <span class="link" onclick="toggleAuth()">Sign Up</span></p>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="hidden">
+
+    <div class="navbar">
+        <h2>DIWA Aneurysm Detection</h2>
+        <button style="width:120px;" onclick="logout()">Log Out</button>
+    </div>
+
+    <div class="nav-tabs">
+        <div class="active" onclick="switchTab('upload')">Upload Image</div>
+        <div onclick="switchTab('results')">Results</div>
+        <div onclick="switchTab('profile')">Profile</div>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="section active" id="upload">
+        <h2>Upload a Brain Scan (CTA / MRA / DSA)</h2>
+
+        <div class="upload-box">
+            <input type="file" id="image-upload" accept="image/*" onchange="previewImage()">
+            <img id="preview-img">
+        </div>
+
+        <button onclick="detectAneurysm()" style="margin-top:20px;">Detect Aneurysm</button>
+
+        <div id="result-box"></div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="section" id="results">
+        <h2>Detection History</h2>
+        <p>No data yet. (This will populate once backend is connected.)</p>
+    </div>
+
+    <!-- Profile -->
+    <div class="section" id="profile">
+        <h2>User Profile</h2>
+        <p><strong>Name:</strong> <span id="prof-name"></span></p>
+        <p><strong>Email:</strong> <span id="prof-email"></span></p>
+    </div>
+</div>
+
+<script>
+/* ===== AUTH LOGIC ===== */
+let isSignup = false;
+
+window.onload = function() {
+    if(localStorage.getItem("isLoggedIn") === "true") {
+        showDashboard();
+    } else {
+        showAuthCard();
+    }
+}
+
+function toggleAuth() {
+    isSignup = !isSignup;
+    document.getElementById("name").classList.toggle("hidden");
+    document.getElementById("auth-title").innerText = isSignup ? "Sign Up" : "Login";
+    document.querySelector("#auth-card button").innerText = isSignup ? "Sign Up" : "Login";
+    document.getElementById("toggle-text").innerHTML = isSignup ? 
+        'Already have an account? <span class="link" onclick="toggleAuth()">Login</span>' :
+        'Don\'t have an account? <span class="link" onclick="toggleAuth()">Sign Up</span>';
+}
+
+function authAction() {
+    let name = document.getElementById("name").value;
+    let email = document.getElementById("email").value;
+    let pass = document.getElementById("pass").value;
+
+    if(!email || !pass || (isSignup && !name)) {
+        alert("Please fill all required fields.");
+        return;
+    }
+
+    if(isSignup) {
+        // Save new user
+        localStorage.setItem("userName", name);
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userPass", pass);
+    } else {
+        // Login check
+        if(email !== localStorage.getItem("userEmail") || pass !== localStorage.getItem("userPass")) {
+            alert("Invalid login credentials.");
+            return;
+        }
+    }
+
+    localStorage.setItem("isLoggedIn", "true");
+    showDashboard();
+}
+
+function showAuthCard() {
+    document.getElementById("auth-card").classList.remove("hidden");
+    document.getElementById("dashboard").classList.add("hidden");
+}
+
+function showDashboard() {
+    document.getElementById("auth-card").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+
+    document.getElementById("prof-name").innerText = localStorage.getItem("userName");
+    document.getElementById("prof-email").innerText = localStorage.getItem("userEmail");
+}
+
+function logout() {
+    localStorage.setItem("isLoggedIn", "false");
+    showAuthCard();
+}
+
+/* ===== TAB SWITCHING ===== */
+function switchTab(sectionName) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(sectionName).classList.add('active');
+
+    document.querySelectorAll('.nav-tabs div').forEach(t => t.classList.remove("active"));
+    event.target.classList.add("active");
+}
+
+/* ===== IMAGE PREVIEW ===== */
+function previewImage() {
+    const file = document.getElementById("image-upload").files[0];
+    if (file) {
+        document.getElementById("preview-img").src = URL.createObjectURL(file);
+        document.getElementById("preview-img").style.display = "block";
+    }
+}
+
+/* ===== DETECTION SIMULATION ===== */
+function detectAneurysm() {
+    let resultBox = document.getElementById("result-box");
+
+    if (!document.getElementById("image-upload").files[0]) {
+        alert("Please upload an image first.");
+        return;
+    }
+
+    resultBox.style.display = "block";
+    resultBox.innerHTML = "<h3>Processing...</h3>";
+
+    setTimeout(() => {
+        resultBox.innerHTML = `
+            <h3>Detection Complete</h3>
+            <p><strong>Aneurysm Probability:</strong> 82%</p>
+            <p><strong>Status:</strong> Potential aneurysm detected.</p>
+        `;
+    }, 1500);
+}
+</script>
+
+</body>
+</html>
